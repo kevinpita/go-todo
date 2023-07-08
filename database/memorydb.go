@@ -8,7 +8,7 @@ import (
 type todos map[int]string
 
 type Database struct {
-	mu     sync.Mutex
+	mu     sync.RWMutex
 	data   todos
 	lastId int
 }
@@ -18,8 +18,8 @@ func CreateDatabase() *Database {
 }
 
 func (db *Database) FetchTodo(id int) (string, error) {
-	db.mu.Lock()
-	defer db.mu.Unlock()
+	db.mu.RLock()
+	defer db.mu.RUnlock()
 
 	val, exists := db.data[id]
 
@@ -31,8 +31,8 @@ func (db *Database) FetchTodo(id int) (string, error) {
 }
 
 func (db *Database) FetchAll() map[int]string {
-	db.mu.Lock()
-	defer db.mu.Unlock()
+	db.mu.RLock()
+	defer db.mu.RUnlock()
 	todoList := make(map[int]string, len(db.data))
 
 	for k, v := range db.data {

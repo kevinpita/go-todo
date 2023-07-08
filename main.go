@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/kevinpita/go-todo/database"
 	"github.com/kevinpita/go-todo/routes"
+	"github.com/narvikd/fiberparser"
 	"log"
 )
 
@@ -18,7 +19,10 @@ func main() {
 }
 
 func setupApp(addr string) error {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
+			return fiberparser.RegisterErrorHandler(ctx, err)
+		}})
 	app.Use(setupLogger())
 
 	routes.RegisterRoutes(app, database.CreateDatabase())

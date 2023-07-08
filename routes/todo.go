@@ -15,11 +15,9 @@ func createErrorMap(err error) fiber.Map {
 }
 
 func (h handler) GetAll(c *fiber.Ctx) error {
-	todoList := h.DB.FetchAll()
-
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
-		"data":    todoList,
+		"data":    h.DB.FetchAll(),
 	})
 }
 

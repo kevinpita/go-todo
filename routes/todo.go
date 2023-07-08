@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/narvikd/errorskit"
+	"github.com/narvikd/fiberparser"
 	"strconv"
 )
 
@@ -30,14 +31,19 @@ func (h handler) GetTodo(c *fiber.Ctx) error {
 }
 
 func (h handler) CreateTodo(c *fiber.Ctx) error {
-	todoText := c.FormValue("todo", "")
+	var body CreateRequestsBody
 
-	if todoText == "" {
-		err := errors.New("empty TODO cannot be created, 'todo' key is required")
-		return FailResponse(err.Error(), c, fiber.StatusBadRequest)
+	err := fiberparser.ParseAndValidate(c, &body)
+	if err != nil {
+		errorskit.LogWrap(err, "CreateTodo invalid parameter")
+		return FailResponse("Invalid request body", c, fiber.StatusBadRequest)
 	}
 
-	id := h.DB.CreateTodo(todoText)
+	todoText := body.Todo
+	if todoText == "" {
+		return FailResponse("todo field is empty", c, fiber.StatusBadRequest)
+	}
 
-	return SuccessResponse(CreateResponseMap(id, todoText), c)
+	data := CreateResponseMap(h.DB.CreateTodo(todoText), todoText)
+	return SuccessResponse(data, c)
 }

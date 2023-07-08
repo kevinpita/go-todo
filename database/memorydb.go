@@ -76,5 +76,7 @@ func (db *Database) DeleteTodo(id int) error {
 		return fmt.Errorf("id %v doesn't exist", id)
 	}
 
+	delete(db.data, id)
+
 	return nil
 }

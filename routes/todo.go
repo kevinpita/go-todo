@@ -13,6 +13,7 @@ func createErrorMap(err error) fiber.Map {
 		"error":   err.Error(),
 	}
 }
+
 func (h handler) GetAll(c *fiber.Ctx) error {
 	todoList := h.DB.FetchAll()
 
@@ -20,7 +21,6 @@ func (h handler) GetAll(c *fiber.Ctx) error {
 		"success": true,
 		"data":    todoList,
 	})
-
 }
 
 func (h handler) GetTodo(c *fiber.Ctx) error {
@@ -41,7 +41,6 @@ func (h handler) GetTodo(c *fiber.Ctx) error {
 		"id":      id,
 		"todo":    todoText,
 	})
-
 }
 
 func (h handler) CreateTodo(c *fiber.Ctx) error {
@@ -59,5 +58,4 @@ func (h handler) CreateTodo(c *fiber.Ctx) error {
 		"id":      id,
 		"todo":    todoText,
 	})
-
 }

@@ -11,19 +11,19 @@ import (
 func main() {
 	const addr = ":3000"
 
-	app := fiber.New()
-	setupApp(app)
-
-	err := app.Listen(addr)
+	err := setupApp(addr)
 	if err != nil {
 		log.Fatalf("App could not be started on %v\n", addr)
 	}
 }
 
-func setupApp(app *fiber.App) {
+func setupApp(addr string) error {
+	app := fiber.New()
 	app.Use(setupLogger())
+
 	routes.RegisterRoutes(app, database.CreateDatabase())
 
+	return app.Listen(addr)
 }
 
 func setupLogger() fiber.Handler {

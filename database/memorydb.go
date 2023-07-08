@@ -18,17 +18,16 @@ func CreateDatabase() *Database {
 }
 
 func (db *Database) FetchTodo(id int) (string, error) {
-	var err error
 	db.mu.Lock()
 	defer db.mu.Unlock()
 
 	val, exists := db.data[id]
 
 	if !exists {
-		err = fmt.Errorf("id %v doesn't exist", id)
+		return "", fmt.Errorf("id %v doesn't exist", id)
 	}
 
-	return val, err
+	return val, nil
 }
 
 func (db *Database) FetchAll() map[int]string {

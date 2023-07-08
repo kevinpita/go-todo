@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/narvikd/errorskit"
@@ -73,4 +74,27 @@ func (h handler) CreateTodo(c *fiber.Ctx) error {
 
 	data := CreateResponseMap(h.DB.CreateTodo(todoText), todoText)
 	return SuccessResponse(data, c)
+}
+
+func (h handler) UpdateTodo(c *fiber.Ctx) error {
+	id, errId := userIdFromParam(c)
+	if errId != nil {
+		errorskit.LogWrap(errId, "udpatetodo")
+		return FailResponse(errId.Error(), c, fiber.StatusBadRequest)
+	}
+
+	todoText, errBody := todoTextFromBody(c)
+	if errBody != nil {
+		errorskit.LogWrap(errBody, "updatetodo")
+		return FailResponse(errBody.Error(), c, fiber.StatusBadRequest)
+	}
+
+	err := h.DB.UpdateTodo(id, todoText)
+
+	if err != nil {
+		errorskit.LogWrap(err, "updatetodo id not found")
+		return FailResponse(err.Error(), c, fiber.StatusNotFound)
+	}
+
+	return SuccessResponse(CreateResponseMap(id, todoText), c)
 }

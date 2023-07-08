@@ -14,7 +14,7 @@ func main() {
 
 	err := setupApp(addr)
 	if err != nil {
-		log.Fatalf("App could not be started on %v\n", addr)
+		log.Fatalf("app could not be started on %v\n", addr)
 	}
 }
 

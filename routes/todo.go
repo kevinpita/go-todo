@@ -12,7 +12,7 @@ func (h handler) GetAll(c *fiber.Ctx) error {
 	todoList := h.DB.FetchAll()
 
 	if len(todoList) == 0 {
-		return FailResponse("There are no TODOs to be returned", c, fiber.StatusNotFound)
+		return FailResponse("there are no TODOs to be returned", c, fiber.StatusNotFound)
 	}
 
 	return SuccessResponse(todoList, c)
@@ -22,14 +22,14 @@ func (h handler) GetTodo(c *fiber.Ctx) error {
 	idParam := c.Params("id")
 	id, errConvert := strconv.Atoi(idParam)
 	if errConvert != nil {
-		errorskit.LogWrap(errConvert, "GetTodo invalid parameter")
+		errorskit.LogWrap(errConvert, "gettodo invalid parameter")
 		errorString := fmt.Sprintf("%v is not a valid id", idParam)
 		return FailResponse(errorString, c, fiber.StatusBadRequest)
 	}
 
 	todoText, err := h.DB.FetchTodo(id)
 	if err != nil {
-		errorskit.LogWrap(err, "GetTodo id not found")
+		errorskit.LogWrap(err, "gettodo id not found")
 		return FailResponse(err.Error(), c, fiber.StatusNotFound)
 	}
 
@@ -41,8 +41,8 @@ func (h handler) CreateTodo(c *fiber.Ctx) error {
 
 	err := fiberparser.ParseAndValidate(c, &body)
 	if err != nil {
-		errorskit.LogWrap(err, "CreateTodo invalid parameter")
-		return FailResponse("Invalid request body", c, fiber.StatusBadRequest)
+		errorskit.LogWrap(err, "createtodo invalid parameter")
+		return FailResponse("invalid request body", c, fiber.StatusBadRequest)
 	}
 
 	todoText := body.Todo

@@ -1,7 +1,6 @@
 package database
 
 import (
-	"errors"
 	"fmt"
 	"sync"
 )
@@ -26,7 +25,7 @@ func (db *Database) FetchTodo(id int) (string, error) {
 	val, exists := db.data[id]
 
 	if !exists {
-		err = errors.New(fmt.Sprintf("ID: %v doesn't exist", id))
+		err = fmt.Errorf("ID: %v doesn't exist", id)
 	}
 
 	return val, err
@@ -61,7 +60,7 @@ func (db *Database) UpdateTodo(id int, todoText string) (string, error) {
 	val, exists := db.data[id]
 
 	if !exists {
-		return "", errors.New(fmt.Sprintf("ID: %v doesn't exist", id))
+		return "", fmt.Errorf("ID: %v doesn't exist", id)
 	}
 
 	db.data[id] = todoText
@@ -75,7 +74,7 @@ func (db *Database) DeleteTodo(id int) (string, error) {
 	val, exists := db.data[id]
 
 	if !exists {
-		return "", errors.New(fmt.Sprintf("ID: %v doesn't exist", id))
+		return "", fmt.Errorf("ID: %v doesn't exist", id)
 	}
 
 	return val, nil

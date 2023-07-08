@@ -27,7 +27,7 @@ func (h handler) GetTodo(c *fiber.Ctx) error {
 	idParam := c.Params("id")
 	id, errConvert := strconv.Atoi(idParam)
 	if errConvert != nil {
-		err := errors.New(fmt.Sprintf("ID: %v is not from a valid type", idParam))
+		err := fmt.Errorf("ID: %v is not from a valid type", idParam)
 		return c.Status(fiber.StatusBadRequest).JSON(createErrorMap(err))
 	}
 

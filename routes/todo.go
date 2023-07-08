@@ -5,8 +5,38 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/narvikd/errorskit"
 	"github.com/narvikd/fiberparser"
+	"log"
 	"strconv"
 )
+
+func userIdFromParam(c *fiber.Ctx) (int, error) {
+	idParam := c.Params("id")
+	id, errConvert := strconv.Atoi(idParam)
+	if errConvert != nil {
+		errorskit.LogWrap(errConvert, "useridfromparam invalid parameter")
+		return 0, fmt.Errorf("%v is not a valid id", idParam)
+	}
+
+	return id, nil
+}
+
+func todoTextFromBody(c *fiber.Ctx) (string, error) {
+	var body TodoRequestBody
+
+	err := fiberparser.ParseAndValidate(c, &body)
+	if err != nil {
+		errorskit.LogWrap(err, "todotextfrombody invalid parameter")
+		return "", errors.New("invalid request body")
+	}
+
+	todoText := body.Todo
+	if todoText == "" {
+		log.Println("todotextfrombody empty todo field")
+		return "", errors.New("todo field is empty")
+	}
+
+	return todoText, nil
+}
 
 func (h handler) GetAll(c *fiber.Ctx) error {
 	todoList := h.DB.FetchAll()
@@ -19,12 +49,10 @@ func (h handler) GetAll(c *fiber.Ctx) error {
 }
 
 func (h handler) GetTodo(c *fiber.Ctx) error {
-	idParam := c.Params("id")
-	id, errConvert := strconv.Atoi(idParam)
-	if errConvert != nil {
-		errorskit.LogWrap(errConvert, "gettodo invalid parameter")
-		errorString := fmt.Sprintf("%v is not a valid id", idParam)
-		return FailResponse(errorString, c, fiber.StatusBadRequest)
+	id, errId := userIdFromParam(c)
+	if errId != nil {
+		errorskit.LogWrap(errId, "gettodo")
+		return FailResponse(errId.Error(), c, fiber.StatusBadRequest)
 	}
 
 	todoText, err := h.DB.FetchTodo(id)
@@ -37,17 +65,10 @@ func (h handler) GetTodo(c *fiber.Ctx) error {
 }
 
 func (h handler) CreateTodo(c *fiber.Ctx) error {
-	var body CreateRequestsBody
-
-	err := fiberparser.ParseAndValidate(c, &body)
+	todoText, err := todoTextFromBody(c)
 	if err != nil {
-		errorskit.LogWrap(err, "createtodo invalid parameter")
-		return FailResponse("invalid request body", c, fiber.StatusBadRequest)
-	}
-
-	todoText := body.Todo
-	if todoText == "" {
-		return FailResponse("todo field is empty", c, fiber.StatusBadRequest)
+		errorskit.LogWrap(err, "createtodo")
+		return FailResponse(err.Error(), c, fiber.StatusBadRequest)
 	}
 
 	data := CreateResponseMap(h.DB.CreateTodo(todoText), todoText)

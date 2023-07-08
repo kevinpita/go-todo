@@ -52,29 +52,29 @@ func (db *Database) CreateTodo(todoText string) int {
 	return db.lastId
 }
 
-func (db *Database) UpdateTodo(id int, todoText string) (string, error) {
+func (db *Database) UpdateTodo(id int, todoText string) error {
 	db.mu.Lock()
 	defer db.mu.Unlock()
 
-	val, exists := db.data[id]
+	_, exists := db.data[id]
 
 	if !exists {
-		return "", fmt.Errorf("id %v doesn't exist", id)
+		return fmt.Errorf("id %v doesn't exist", id)
 	}
 
 	db.data[id] = todoText
-	return val, nil // returns old value as the new one is already known by the caller
+	return nil
 }
 
-func (db *Database) DeleteTodo(id int) (string, error) {
+func (db *Database) DeleteTodo(id int) error {
 	db.mu.Lock()
 	defer db.mu.Unlock()
 
-	val, exists := db.data[id]
+	_, exists := db.data[id]
 
 	if !exists {
-		return "", fmt.Errorf("id %v doesn't exist", id)
+		return fmt.Errorf("id %v doesn't exist", id)
 	}
 
-	return val, nil
+	return nil
 }

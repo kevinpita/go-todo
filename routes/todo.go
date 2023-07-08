@@ -9,7 +9,13 @@ import (
 )
 
 func (h handler) GetAll(c *fiber.Ctx) error {
-	return SuccessResponse(h.DB.FetchAll(), c)
+	todoList := h.DB.FetchAll()
+
+	if len(todoList) == 0 {
+		return FailResponse("There are no TODOs to be returned", c, fiber.StatusNotFound)
+	}
+
+	return SuccessResponse(todoList, c)
 }
 
 func (h handler) GetTodo(c *fiber.Ctx) error {

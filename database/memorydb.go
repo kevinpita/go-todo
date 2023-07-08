@@ -5,16 +5,16 @@ import (
 	"sync"
 )
 
-type todos map[int]string
+type Todos map[int]string
 
 type Database struct {
 	mu     sync.RWMutex
-	data   todos
+	data   Todos
 	lastId int
 }
 
 func CreateDatabase() *Database {
-	return &Database{data: make(todos), lastId: -1}
+	return &Database{data: make(Todos), lastId: -1}
 }
 
 func (db *Database) FetchTodo(id int) (string, error) {
@@ -30,10 +30,10 @@ func (db *Database) FetchTodo(id int) (string, error) {
 	return val, nil
 }
 
-func (db *Database) FetchAll() map[int]string {
+func (db *Database) FetchAll() Todos {
 	db.mu.RLock()
 	defer db.mu.RUnlock()
-	todoList := make(map[int]string, len(db.data))
+	todoList := make(Todos, len(db.data))
 
 	for k, v := range db.data {
 		todoList[k] = v

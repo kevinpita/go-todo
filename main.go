@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/kevinpita/go-todo/database"
@@ -10,14 +9,14 @@ import (
 )
 
 func main() {
-	const port = 3000
+	const addr = ":3000"
 
 	app := fiber.New()
 	setupApp(app)
 
-	err := app.Listen(fmt.Sprintf(":%d", port))
+	err := app.Listen(addr)
 	if err != nil {
-		log.Fatalf("App could not be started on port %d\n", port)
+		log.Fatalf("App could not be started on %v\n", addr)
 	}
 }
 

@@ -22,8 +22,7 @@ func main() {
 
 func setupApp(app *fiber.App) {
 	app.Use(setupLogger())
-	db := database.CreateDatabase()
-	routes.RegisterRoutes(app, db)
+	routes.RegisterRoutes(app, database.CreateDatabase())
 
 }
 

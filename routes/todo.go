@@ -51,10 +51,10 @@ func (h handler) GetAll(c *fiber.Ctx) error {
 }
 
 func (h handler) GetTodo(c *fiber.Ctx) error {
-	id, errId := userIdFromParam(c)
-	if errId != nil {
-		errorskit.LogWrap(errId, "gettodo")
-		return FailResponse(errId.Error(), c, fiber.StatusBadRequest)
+	id, errReadParam := userIdFromParam(c)
+	if errReadParam != nil {
+		errorskit.LogWrap(errReadParam, "gettodo")
+		return FailResponse(errReadParam.Error(), c, fiber.StatusBadRequest)
 	}
 
 	todoText, err := h.DB.FetchTodo(id)
@@ -67,10 +67,10 @@ func (h handler) GetTodo(c *fiber.Ctx) error {
 }
 
 func (h handler) CreateTodo(c *fiber.Ctx) error {
-	todoText, err := todoTextFromBody(c)
-	if err != nil {
-		errorskit.LogWrap(err, "createtodo")
-		return FailResponse(err.Error(), c, fiber.StatusBadRequest)
+	todoText, errParseBody := todoTextFromBody(c)
+	if errParseBody != nil {
+		errorskit.LogWrap(errParseBody, "createtodo")
+		return FailResponse(errParseBody.Error(), c, fiber.StatusBadRequest)
 	}
 
 	data := CreateResponseMap(h.DB.CreateTodo(todoText), todoText)
@@ -78,16 +78,16 @@ func (h handler) CreateTodo(c *fiber.Ctx) error {
 }
 
 func (h handler) UpdateTodo(c *fiber.Ctx) error {
-	id, errId := userIdFromParam(c)
-	if errId != nil {
-		errorskit.LogWrap(errId, "udpatetodo")
-		return FailResponse(errId.Error(), c, fiber.StatusBadRequest)
+	id, errReadParam := userIdFromParam(c)
+	if errReadParam != nil {
+		errorskit.LogWrap(errReadParam, "udpatetodo")
+		return FailResponse(errReadParam.Error(), c, fiber.StatusBadRequest)
 	}
 
-	todoText, errBody := todoTextFromBody(c)
-	if errBody != nil {
-		errorskit.LogWrap(errBody, "updatetodo")
-		return FailResponse(errBody.Error(), c, fiber.StatusBadRequest)
+	todoText, errParseBody := todoTextFromBody(c)
+	if errParseBody != nil {
+		errorskit.LogWrap(errParseBody, "updatetodo")
+		return FailResponse(errParseBody.Error(), c, fiber.StatusBadRequest)
 	}
 
 	err := h.DB.UpdateTodo(id, todoText)
@@ -100,10 +100,10 @@ func (h handler) UpdateTodo(c *fiber.Ctx) error {
 }
 
 func (h handler) DeleteTodo(c *fiber.Ctx) error {
-	id, errId := userIdFromParam(c)
-	if errId != nil {
-		errorskit.LogWrap(errId, "deletetodo")
-		return FailResponse(errId.Error(), c, fiber.StatusBadRequest)
+	id, errReadParam := userIdFromParam(c)
+	if errReadParam != nil {
+		errorskit.LogWrap(errReadParam, "deletetodo")
+		return FailResponse(errReadParam.Error(), c, fiber.StatusBadRequest)
 	}
 
 	err := h.DB.DeleteTodo(id)

@@ -1,5 +1,5 @@
 package routes
 
-type CreateRequestsBody struct {
+type TodoRequestBody struct {
 	Todo string `json:"todo"`
 }

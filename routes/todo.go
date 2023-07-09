@@ -3,11 +3,12 @@ package routes
 import (
 	"errors"
 	"fmt"
+	"log"
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/narvikd/errorskit"
 	"github.com/narvikd/fiberparser"
-	"log"
-	"strconv"
 )
 
 func userIdFromParam(c *fiber.Ctx) (int, error) {
@@ -90,7 +91,6 @@ func (h handler) UpdateTodo(c *fiber.Ctx) error {
 	}
 
 	err := h.DB.UpdateTodo(id, todoText)
-
 	if err != nil {
 		errorskit.LogWrap(err, "updatetodo id not found")
 		return FailResponse(err.Error(), c, fiber.StatusNotFound)

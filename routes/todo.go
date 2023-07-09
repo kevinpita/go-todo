@@ -98,3 +98,20 @@ func (h handler) UpdateTodo(c *fiber.Ctx) error {
 
 	return SuccessResponse(CreateResponseMap(id, todoText), c)
 }
+
+func (h handler) DeleteTodo(c *fiber.Ctx) error {
+	id, errId := userIdFromParam(c)
+	if errId != nil {
+		errorskit.LogWrap(errId, "deletetodo")
+		return FailResponse(errId.Error(), c, fiber.StatusBadRequest)
+	}
+
+	err := h.DB.DeleteTodo(id)
+	if err != nil {
+		errorskit.LogWrap(err, "deletetodo id not found")
+		return FailResponse(err.Error(), c, fiber.StatusNotFound)
+	}
+
+	// returns a map of id:"" to follow how other methods are used
+	return SuccessResponse(CreateResponseMap(id, ""), c)
+}

@@ -19,4 +19,6 @@ func RegisterRoutes(app *fiber.App, db *database.Database) {
 	todoApi.Post("/", h.CreateTodo)
 
 	todoApi.Put("/:id", h.UpdateTodo)
+
+	todoApi.Delete("/:id", h.DeleteTodo)
 }
